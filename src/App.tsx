@@ -42,6 +42,9 @@ class TicTacToe {
   cells: NodeListOf<HTMLTableCellElement>;
   gameOver: boolean;
 
+  private isClicked: boolean;
+  private cellClicked = false;
+
   constructor() {
     // Initialize board
     this.board = [
@@ -52,149 +55,127 @@ class TicTacToe {
     this.player = 'X';
     this.cells = document.querySelectorAll('td');
     this.gameOver = false;
+    this.isClicked = false;
   }
 
   public init() {
-    console.log(document.querySelectorAll('td'));
     for (let i = 0; i < this.cells.length; i++) {
-
-      this.cells[i].addEventListener('click', () => {
+      this.cells[i].addEventListener('click', (event) => {
         const row = Math.floor(i / 3);
         const col = i % 3;
-        const win = this.checkForWin();
-        this.play(row, col, win);
-      });
-
-      /***
-      this.cells[i].addEventListener('click', () => {
-        const row = Math.floor(i / 3);
-        const col = i % 3;
-        const win = this.checkForWin();
-        this.play(row, col, win);
-      });
-      */
+        this.play(row, col);
+    });
     }
   }
 
   private showMessage(message: string) {
-    const messageBox = document.createElement('div');
-    messageBox.textContent = message;
-    messageBox.classList.add('message-box');
-    const okButton = document.createElement('button');
-    okButton.textContent = 'OK';
-    okButton.classList.add('ok-button');
-    okButton.addEventListener('click', () => {
-      messageBox.remove();
-      this.reset();
-    });
-    messageBox.appendChild(okButton);
-    document.body.appendChild(messageBox);
+      if(!messageDisplayed){
+          console.log("Message displayed.")
+          const messageBox = document.createElement('div');
+          messageBox.textContent = message;
+          messageBox.classList.add('message-box');
+          const okButton = document.createElement('button');
+          okButton.textContent = 'OK';
+          okButton.classList.add('ok-button');
+          okButton.addEventListener('click', () => {
+              messageBox.remove();
+              this.reset();
+              messageDisplayed = false;
+          });
+          messageBox.appendChild(okButton);
+          document.body.appendChild(messageBox);
+          messageDisplayed = true;
+      }
   }
 
-  private play(i: number, j: number, win: boolean) {
-    if (win || this.board[i][j] !== '') {
-      return;
+  private play(i: number, j: number) {
+    if (this.gameOver || this.board[i][j] !== '') {
+        return;
     }
     const cell = this.cells[i * 3 + j];
     if (!cell) return;
-      if (win) {
-      this.board[i][j] = this.player;
-      cell.textContent = this.player;
-      if (this.player === 'X') {
-        cell.classList.add('x-color');
-      }
-      cell.classList.add('played');
-      this.reset();
-      return;
-    }
-    // Check if cell is already occupied
-    if (this.board[i][j] !== '') {
-      return;
-    }
     // Update board and add visual effects
     this.board[i][j] = this.player;
     cell.textContent = this.player;
     if (this.player === 'X') {
-      cell.classList.add('x-color');
+        cell.classList.add('x-color');
     }
     cell.classList.add('played');
     // Check for game over
-    if (this.checkForWin()) {
-      this.showMessage(`Player ${this.player} wins!`);
-      this.reset();
-      this.gameOver = true;
+    const win = this.checkForWin();
+    if (win) {
+        this.showMessage(`Player ${this.player} wins!`);
+        this.gameOver = true;
+        return;
     } else if (this.checkForTie()) {
-      this.showMessage('Tie game!');
-      this.reset();
-      this.gameOver = true;
+        this.showMessage('Tie game!');
+        this.gameOver = true;
+        return;
     } else {
-      // Switch players
-      this.player = this.player === 'X' ? 'O' : 'X';
+        // Switch players
+        this.player = this.player === 'X' ? 'O' : 'X';
     }
-  }
+}
 
   private checkForWin() {
     for (let i = 0; i < 3; i++) {
       if (this.board[i][0] === this.player && this.board[i][1] === this.player && this.board[i][2] === this.player) {
+        if (!this.gameOver) {
+          this.gameOver = true;
+        }
         return true;
       }
     }
     for (let j = 0; j < 3; j++) {
       if (this.board[0][j] === this.player && this.board[1][j] === this.player && this.board[2][j] === this.player) {
+        if (!this.gameOver) {
+          this.gameOver = true;
+        }
         return true;
       }
     }
     if (this.board[0][0] === this.player && this.board[1][1] === this.player && this.board[2][2] === this.player) {
+      if (!this.gameOver) {
+        this.gameOver = true;
+      }
       return true;
     }
     if (this.board[0][2] === this.player && this.board[1][1] === this.player && this.board[2][0] === this.player) {
+      if (!this.gameOver) {
+        this.gameOver = true;
+      }
       return true;
     }
     return false;
   }
 
   private checkForTie() {
-    let tie = true;
     for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (this.board[i][j] === '') {
-          tie = false;
-          break;
+        for (let j = 0; j < 3; j++) {
+            if (this.board[i][j] === '') {
+                return false;
+            }
         }
-      }
     }
-    if (tie) {
-      const message = document.createElement('div');
-      message.textContent = "It's a tie!";
-      message.classList.add('tie-message');
-      const button = document.createElement('button');
-      button.textContent = 'OK';
-      button.classList.add('ok-button');
-      button.addEventListener('click', () => {
-        message.remove();
-        this.reset();
-      });
-      message.appendChild(button);
-      document.body.appendChild(message);
-      return true;
+    if (!this.gameOver) {
+      this.gameOver = true;
     }
-    return false;
+    return true;
   }
 
   private reset() {
-    this.board = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ];
+    this.board.forEach(row => row.fill(''));
     this.player = 'X';
-    // Remove visual effects and reset cell text
-    for (let i = 0; i < this.cells.length; i++) {
-        this.cells[i].classList.remove('played');
-        this.cells[i].innerText = '';
-    }
+    this.gameOver = false;
+    this.isClicked = false;
+    this.cells.forEach(cell => {
+      cell.classList.remove('x-color', 'played');
+      cell.textContent = '';
+    });
   }
 }
+
+let messageDisplayed = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   const game = new TicTacToe();
