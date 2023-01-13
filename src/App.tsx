@@ -41,6 +41,7 @@ class TicTacToe {
   player: string;
   cells: NodeListOf<HTMLTableCellElement>;
   gameOver: boolean;
+  winningCells: [number, number][];
 
   private isClicked: boolean;
   private cellClicked = false;
@@ -56,6 +57,7 @@ class TicTacToe {
     this.cells = document.querySelectorAll('td');
     this.gameOver = false;
     this.isClicked = false;
+    this.winningCells = [];
   }
 
   public init() {
@@ -69,28 +71,28 @@ class TicTacToe {
   }
 
   private showMessage(message: string) {
-      if(!messageDisplayed){
-          console.log("Message displayed.")
-          const messageBox = document.createElement('div');
-          messageBox.textContent = message;
-          messageBox.classList.add('message-box');
-          const okButton = document.createElement('button');
-          okButton.textContent = 'OK';
-          okButton.classList.add('ok-button');
-          okButton.addEventListener('click', () => {
-              messageBox.remove();
-              this.reset();
-              messageDisplayed = false;
-          });
-          messageBox.appendChild(okButton);
-          document.body.appendChild(messageBox);
-          messageDisplayed = true;
-      }
-  }
+    if(!messageDisplayed){
+        console.log("Message displayed.")
+        const messageBox = document.createElement('div');
+        messageBox.textContent = message;
+        messageBox.classList.add('message-box');
+        const okButton = document.createElement('button');
+        okButton.textContent = 'OK';
+        okButton.classList.add('ok-button');
+        okButton.addEventListener('click', () => {
+            messageBox.remove();
+            this.reset();
+            messageDisplayed = false;
+        });
+        messageBox.appendChild(okButton);
+        document.body.appendChild(messageBox);
+        messageDisplayed = true;
+    }
+}
 
   private play(i: number, j: number) {
     if (this.gameOver || this.board[i][j] !== '') {
-        return;
+      return;
     }
     const cell = this.cells[i * 3 + j];
     if (!cell) return;
@@ -98,52 +100,54 @@ class TicTacToe {
     this.board[i][j] = this.player;
     cell.textContent = this.player;
     if (this.player === 'X') {
-        cell.classList.add('x-color');
+      cell.classList.add('x-color');
     }
     cell.classList.add('played');
     // Check for game over
     const win = this.checkForWin();
     if (win) {
-        this.showMessage(`Player ${this.player} wins!`);
-        this.gameOver = true;
-        return;
+      this.setWinningCells(this.winningCells);
+      this.showMessage(`Player ${this.player} wins!`);
+      this.gameOver = true;
+      return;
     } else if (this.checkForTie()) {
-        this.showMessage('Tie game!');
-        this.gameOver = true;
-        return;
+      this.showMessage('Tie game!');
+      this.gameOver = true;
+      return;
     } else {
-        // Switch players
-        this.player = this.player === 'X' ? 'O' : 'X';
+      // Switch players
+      this.player = this.player === 'X' ? 'O' : 'X';
     }
-}
+  }
+
+  private setWinningCells(winningCells: [number, number][]) {
+    for (let i = 0; i < winningCells.length; i++) {
+        const [row, col] = winningCells[i];
+        const cell = this.cells[row * 3 + col];
+        if (!cell) return;
+        cell.classList.add("winner");
+    }
+  }
 
   private checkForWin() {
     for (let i = 0; i < 3; i++) {
       if (this.board[i][0] === this.player && this.board[i][1] === this.player && this.board[i][2] === this.player) {
-        if (!this.gameOver) {
-          this.gameOver = true;
-        }
+        this.winningCells.push([i, 0], [i, 1], [i, 2]);
         return true;
       }
     }
     for (let j = 0; j < 3; j++) {
       if (this.board[0][j] === this.player && this.board[1][j] === this.player && this.board[2][j] === this.player) {
-        if (!this.gameOver) {
-          this.gameOver = true;
-        }
+        this.winningCells.push([0, j], [1, j], [2, j]);
         return true;
       }
     }
     if (this.board[0][0] === this.player && this.board[1][1] === this.player && this.board[2][2] === this.player) {
-      if (!this.gameOver) {
-        this.gameOver = true;
-      }
+      this.winningCells.push([0, 0], [1, 1], [2, 2]);
       return true;
     }
     if (this.board[0][2] === this.player && this.board[1][1] === this.player && this.board[2][0] === this.player) {
-      if (!this.gameOver) {
-        this.gameOver = true;
-      }
+      this.winningCells.push([0, 2], [1, 1], [2, 0]);
       return true;
     }
     return false;
@@ -168,8 +172,9 @@ class TicTacToe {
     this.player = 'X';
     this.gameOver = false;
     this.isClicked = false;
+    this.winningCells = [];
     this.cells.forEach(cell => {
-      cell.classList.remove('x-color', 'played');
+      cell.classList.remove('x-color', 'played', 'winner');
       cell.textContent = '';
     });
   }
