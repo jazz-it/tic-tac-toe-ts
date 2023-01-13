@@ -40,11 +40,11 @@ td {
   color: rgb(255, 255, 255);
   border: 5px solid rgb(110, 113, 121);
   border-radius: 10px;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
   text-align: center;
-  font-size: 70px;
+  font-size: 116px;
   border-spacing: 5px;
   background: rgb(44, 49, 60);
 }
@@ -59,7 +59,7 @@ td {
 
 .message-box {
   position: absolute;
-  top: 20%;
+  top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgb(72, 72, 72);
