@@ -70,25 +70,45 @@ class TicTacToe {
     }
   }
 
-  private showMessage(message: string) {
+  private showMessage(message: string, winner?: string) {
     if(!messageDisplayed){
-        console.log("Message displayed.")
         const messageBox = document.createElement('div');
         messageBox.textContent = message;
         messageBox.classList.add('message-box');
+        if (winner === "X") {
+          messageBox.classList.add('x');
+        } else if (winner === "O") {
+          messageBox.classList.add('o');
+        }
         const okButton = document.createElement('button');
         okButton.textContent = 'OK';
         okButton.classList.add('ok-button');
         okButton.addEventListener('click', () => {
+          messageBox.classList.remove("show");
+          messageBox.classList.add("hide");
+          setTimeout(()=>{
             messageBox.remove();
             this.reset();
             messageDisplayed = false;
+          },500);
         });
         messageBox.appendChild(okButton);
         document.body.appendChild(messageBox);
         messageDisplayed = true;
+        requestAnimationFrame(() => {
+          messageBox.classList.add("show");
+        });
+        setTimeout(() => {
+          messageBox.classList.remove("show");
+          messageBox.classList.add("hide");
+          setTimeout(()=>{
+            messageBox.remove();
+            this.reset();
+            messageDisplayed = false;
+          },500);
+        }, 5000);
     }
-}
+  }
 
   private play(i: number, j: number) {
     if (this.gameOver || this.board[i][j] !== '') {
@@ -107,7 +127,7 @@ class TicTacToe {
     const win = this.checkForWin();
     if (win) {
       this.setWinningCells(this.winningCells);
-      this.showMessage(`Player ${this.player} wins!`);
+      this.showMessage(`Player ${this.player} wins!`, this.player);
       this.gameOver = true;
       return;
     } else if (this.checkForTie()) {
