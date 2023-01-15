@@ -53,6 +53,14 @@ td {
   background: rgb(44, 49, 60);
 }
 
+td:hover {
+  border: 5px solid rgb(141, 145, 158);
+}
+
+td:not( :hover ) {
+  border: 5px solid rgb(110, 113, 121);
+}
+
 .x-color {
   color: rgb(177, 50, 101);
 }
