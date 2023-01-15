@@ -43,12 +43,12 @@ td {
   color: rgb(255, 255, 255);
   border: 5px solid rgb(110, 113, 121);
   border-radius: 10px;
-  width: 110px;
-  height: 110px;
-  line-height: 110px;
+  width: 20vmin; /* 20% of the viewport width */
+  height: 20vmin; /* 20% of the viewport height */
+  line-height: 20vmin;
   /* transform: scaleY(1.1); /* adjust the line-height */
   text-align: center;
-  font-size: 90px;
+  font-size: 16vmin;
   border-spacing: 5px;
   background: rgb(44, 49, 60);
 }
@@ -88,6 +88,10 @@ td {
   animation: timeout 5s linear forwards;
 }
 
+.message-box:before {
+  background-color: rgb(83, 83, 83);
+}
+
 .message-box.o:before {
   background-color: rgb(98, 150, 119);
 }
@@ -124,6 +128,15 @@ td {
 
 .winner.x-color {
   color: rgb(177, 50, 101);
+}
+
+#version {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-family: monospace, monospace;
+  color: rgb(64, 71, 84);
+  padding: 4px 10px;
 }
 
 @keyframes App-logo-spin {
@@ -169,5 +182,23 @@ td {
   }
   to {
     width: 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  td {
+    width: 33vw; /* 33% of the viewport width */
+    height: 33vw; /* 33% of the viewport width */
+    line-height: 33vw;
+    font-size: 25vw;
+    }
+}
+
+@media screen and (max-width: 800px) {
+  td {
+    width: 25vw; /* 27% of the viewport width */
+    height: 25vw; /* 27% of the viewport width */
+    line-height: 25vw;
+    font-size: 20vw;
   }
 }
