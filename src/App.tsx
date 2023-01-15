@@ -3,6 +3,7 @@ import './App.css';
 
 class App extends Component {
   componentDidMount() {
+    console.log("componentDidMount");
     const game = new TicTacToe();
     game.init();
   }
@@ -66,6 +67,10 @@ class TicTacToe {
   public init() {
     for (let i = 0; i < this.cells.length; i++) {
       this.cells[i].addEventListener('click', (event) => {
+<<<<<<< HEAD
+=======
+        console.log("init EventListener: entered!");
+>>>>>>> origin/main
         if (this.gameOver) {
           return;
         }
@@ -90,6 +95,10 @@ class TicTacToe {
         okButton.textContent = 'OK';
         okButton.classList.add('ok-button');
         okButton.addEventListener('click', () => {
+<<<<<<< HEAD
+=======
+            console.log("showMessage EventListener: entered!");
+>>>>>>> origin/main
             messageBox.classList.remove("show");
             messageBox.classList.add("hide");
             // okButton.removeEventListener('click', this.audio.play);
@@ -119,7 +128,9 @@ class TicTacToe {
   }
 
   private play(i: number, j: number) {
+    console.log("play: entered");
     if (this.gameOver || this.board[i][j] !== '') {
+      console.log("play: forced exit");
       return;
     }
     const cell = this.cells[i * 3 + j];
@@ -157,7 +168,10 @@ class TicTacToe {
         // After the first win, the audio object is initialized and starts playing in the setTimeout function,
         // and a new audio object is created and starts playing before the first audio object finishes playing.
         this.audio.src = winningSong[randomNumber];
+<<<<<<< HEAD
       }
+=======
+>>>>>>> origin/main
         this.setWinningCells(this.winningCells);
         this.showMessage(`Player ${this.player} wins!`, this.player);
         this.gameOver = true;
@@ -169,6 +183,10 @@ class TicTacToe {
           this.audio.volume = 0.8;
           this.audio.play();
         }, 150);
+<<<<<<< HEAD
+=======
+      }
+>>>>>>> origin/main
       return;
     } else if (this.checkForTie()) {
       this.audio.src = "https://cdn.pixabay.com/download/audio/2022/03/10/audio_fd5890b345.mp3?filename=error-2-36058.mp3";
@@ -236,6 +254,7 @@ class TicTacToe {
   }
 
   private reset() {
+    console.log("reset: entered");
     this.board.forEach(row => row.fill(''));
     this.player = 'X';
     this.gameOver = false;
